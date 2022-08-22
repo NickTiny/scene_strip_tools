@@ -231,7 +231,6 @@ class SEQUENCE_PT_convert_cameras(bpy.types.Operator):
             newScene = bpy.context.scene.sequence_editor.sequences.new_scene(cam_marker[cnt][1], bpy.context.scene, addSceneChannel, addSceneTlStart)
             newScene.scene_camera = bpy.data.objects[cam_marker[cnt][1]]
             newScene = bpy.context.scene.sequence_editor.sequences_all[newScene.name]
-            newScene.animation_offset_start = addSceneIn
             newScene.frame_final_end = addSceneOut
             newScene.frame_start = cf
             cnt += 1
