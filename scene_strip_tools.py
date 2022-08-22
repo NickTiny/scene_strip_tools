@@ -75,9 +75,16 @@ def swich_camera_at_frame_change(*pArgs):
 
     global oldStrip
     scn = bpy.context.scene
+    # stop function if no sequence_editor is present in the current scene
+    if scn.sequence_editor is None:
+        return
     seq = scn.sequence_editor.sequences
     seq = sorted(seq, key=attrgetter('channel', 'frame_final_start'))
     cf = scn.frame_current
+
+    # check if bool property is enabled
+    if not scn.asset_manager.link_seq_to_3d_view:
+        return
 
     for i in seq:
         try:
@@ -96,17 +103,6 @@ def swich_camera_at_frame_change(*pArgs):
         except AttributeError:
             pass
 
-
-# ------------------------------------------------------------------------
-#     Un/link 3D Cameras from/to Sequencer at frame change
-# ------------------------------------------------------------------------
-
-def attach_as_handler():
-    bpy.app.handlers.frame_change_pre.append(swich_camera_at_frame_change)
-
-
-def detach_as_handler():
-    bpy.app.handlers.frame_change_pre.clear()
 
 
 # ------------------------------------------------------------------------
@@ -147,12 +143,7 @@ class SEQUENCER_PT_scene_tools(Panel):
         col.operator("sequencer.convert_cameras", text="Convert Camera Markers to Strips", icon="MARKER")
         col.operator("sequencer.change_scene", text="Toggle Scene Strip", icon="VIEW3D")
 
-        # check if bool property is enabled
-        if (context.scene.asset_manager.link_seq_to_3d_view == True):
-            swich_camera_at_frame_change()
-            attach_as_handler()
-        else:
-            detach_as_handler()
+        
 
 
 # ------------------------------------------------------------------------
@@ -367,7 +358,6 @@ addon_keymaps = []
 
 
 def register():
-
     bpy.types.SEQUENCER_MT_strip.append(menu_toggle_scene)
     bpy.types.SEQUENCER_MT_context_menu.append(menu_toggle_scene)
     bpy.types.SEQUENCER_HT_header.append(menu_link_tdview)
@@ -382,10 +372,11 @@ def register():
     for i in classes:
         register_class(i)
     bpy.types.Scene.asset_manager = bpy.props.PointerProperty(type=PropertyGroup)
+    bpy.app.handlers.frame_change_pre.append(swich_camera_at_frame_change)
 
 
 def unregister():
-
+    bpy.app.handlers.frame_change_pre.clear()
     bpy.types.SEQUENCER_MT_strip.remove(menu_toggle_scene)
     bpy.types.SEQUENCER_MT_context_menu.remove(menu_toggle_scene)
     bpy.types.SEQUENCER_HT_header.remove(menu_link_tdview)
