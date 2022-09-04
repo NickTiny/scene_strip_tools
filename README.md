@@ -5,7 +5,7 @@ Do Storyboarding and 3D Previz directly integrated with the Blender Video Sequen
 ![gif](https://github.com/tin2tin/scene_strip_tools/raw/master/SceneStripTools.gif)
 
 ## Installation
-Download and install this file: https://github.com/tin2tin/scene_strip_tools/raw/master/scene_strip_tools.py
+Download and install this file: https://github.com/NickTiny/scene_strip_tools/raw/master/scene_strip_tools.py
 
 ## Important
 
